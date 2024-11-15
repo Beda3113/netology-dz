@@ -2,7 +2,7 @@ import psycopg2
 
 def create_db(conn):
     with conn.cursor() as cur:
-        # Создание таблицы клиентов
+    
         cur.execute("""
         CREATE TABLE IF NOT EXISTS clients (
             id SERIAL PRIMARY KEY,
@@ -12,7 +12,7 @@ def create_db(conn):
         );
         """)
 
-        # Создание таблицы телефонов
+    
         cur.execute("""
         CREATE TABLE IF NOT EXISTS phones (
             id SERIAL PRIMARY KEY,
@@ -85,20 +85,15 @@ def find_client(conn, first_name=None, last_name=None, email=None, phone=None):
         cur.execute(query, params)
         return cur.fetchall()
 
-# Демонстрация работы функций
 if __name__ == "__main__":
     with psycopg2.connect(database="clients_db", user="postgres", password="postgres") as conn:
         create_db(conn)
-
-        # Добавление клиентов
+        
         client_id = add_client(conn, 'ben', 'Doe', 'ben.doe@example.com', ['1234567890', '0987654321'])
         print(f"Added client with ID: {client_id}")
 
-        # Добавление телефона
         add_phone(conn, client_id, '1112223333')
-
-        # Изменение данных клиента
+        
         change_client(conn, client_id, email='ben.new@example.com')
-
-        # Поиск клиента
+        
         found_clients = find_client(conn, first_name='ben')
