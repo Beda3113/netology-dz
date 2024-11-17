@@ -1,54 +1,48 @@
--- Создание таблицы исполнителей
-CREATE TABLE исполнители (
-    id SERIAL PRIMARY KEY,
-    имя VARCHAR(100) NOT NULL
+-- Название и продолжительность самого длительного трека
+SELECT title, duration FROM Track ORDER BY duration DESC LIMIT 1;
+
+-- Название треков, продолжительность которых не менее 3.5 минут
+SELECT title FROM Track WHERE duration >= '00:03:30';
+
+-- Названия сборников, вышедших в период с 2018 по 2020 год включительно
+SELECT title FROM Compilation WHERE release_year BETWEEN 2018 AND 2020;
+
+-- Исполнители, чьё имя состоит из одного слова
+SELECT name FROM Artist WHERE name NOT LIKE '% %';
+
+-- Название треков, которые содержат слово «мой» или «my»
+SELECT title FROM Track WHERE title ILIKE '%мой%' OR title ILIKE '%my%';
+-- Количество исполнителей в каждом жанре
+SELECT g.name AS genre_name, COUNT(DISTINCT ag.artist_id) AS artist_count
+FROM Genre g
+LEFT JOIN Artist_Genre ag ON g.id = ag.genre_id
+GROUP BY g.id;
+
+-- Количество треков, вошедших в альбомы 2019–2020 годов
+SELECT COUNT(t.id) AS track_count
+FROM Track t
+JOIN Album a ON t.album_id = a.id
+WHERE a.release_year BETWEEN 2019 AND 2020;
+
+-- Средняя продолжительность треков по каждому альбому
+SELECT a.title AS album_title, AVG(EXTRACT(EPOCH FROM t.duration)) / 60 AS avg_duration_minutes
+FROM Album a
+JOIN Track t ON a.id = t.album_id
+GROUP BY a.id;
+
+-- Все исполнители, которые не выпустили альбомы в 2020 году
+SELECT DISTINCT ar.name 
+FROM Artist ar 
+WHERE ar.id NOT IN (
+    SELECT DISTINCT aa.artist_id 
+    FROM Artist_Album aa 
+    JOIN Album al ON aa.album_id = al.id 
+    WHERE al.release_year = 2020
 );
 
--- Создание таблицы жанров
-CREATE TABLE жанры (
-    id SERIAL PRIMARY KEY,
-    название VARCHAR(100) NOT NULL
-);
-
--- Создание таблицы альбомов
-CREATE TABLE альбомы (
-    id SERIAL PRIMARY KEY,
-    название VARCHAR(100) NOT NULL,
-    год_выпуска INT NOT NULL CHECK (год_выпуска > 1900)
-);
-
--- Создание таблицы треков с продолжительностью в секундах
-CREATE TABLE треки (
-    id SERIAL PRIMARY KEY,
-    название VARCHAR(100) NOT NULL,
-    продолжительность INT NOT NULL, -- продолжительность в секундах
-    альбом_id INT REFERENCES альбомы(id)
-);
-
--- Создание таблицы сборников
-CREATE TABLE сборники (
-    id SERIAL PRIMARY KEY,
-    название VARCHAR(100) NOT NULL,
-    год_выпуска INT NOT NULL CHECK (год_выпуска > 1900)
-);
-
--- Таблица для связи исполнителей с жанрами
-CREATE TABLE исполнитель_жанр (
-    исполнитель_id INT REFERENCES исполнители(id),
-    жанр_id INT REFERENCES жанры(id),
-    PRIMARY KEY (исполнитель_id, жанр_id)
-);
-
--- Таблица для связи исполнителей с альбомами
-CREATE TABLE исполнитель_альбом (
-    исполнитель_id INT REFERENCES исполнители(id),
-    альбом_id INT REFERENCES альбомы(id),
-    PRIMARY KEY (исполнитель_id, альбом_id)
-);
-
--- Таблица для связи сборников с треками
-CREATE TABLE сборник_трек (
-    сборник_id INT REFERENCES сборники(id),
-    трек_id INT REFERENCES треки(id),
-    PRIMARY KEY (сборник_id, трек_id)
-);
+-- Названия сборников, в которых присутствует конкретный исполнитель (например, Исполнитель 1)
+SELECT DISTINCT c.title 
+FROM Compilation c 
+JOIN Track t ON c.id = t.compilation_id 
+JOIN Artist_Album aa ON t.album_id = aa.album_id 
+WHERE aa.artist_id = (SELECT id FROM Artist WHERE name = 'Исполнитель 1');
