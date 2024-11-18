@@ -31,4 +31,4 @@ SELECT DISTINCT al.title AS album_title
 FROM Albums al
 JOIN Tracks t ON al.album_id = t.album_id
 JOIN Artists a ON t.artist_id = a.artist_id
-WHERE a.name = 'ArtistName';  -- Замените 'ArtistName' на имя исполнителя.
+WHERE a.name = 'ArtistName';  
