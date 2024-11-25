@@ -1,51 +1,43 @@
-CREATE TABLE Artist (
-    id INT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
-);
+-- 1. Количество исполнителей в каждом жанре
+WITH artist_count AS (
+    SELECT g.name AS genre, COUNT(DISTINCT a.id) AS artist_count
+    FROM Genre g
+    JOIN Artist a ON g.id = a.genre_id
+    GROUP BY g.name
+),
 
-CREATE TABLE Genre (
-    id INT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
-);
+-- 2. Количество треков, вошедших в альбомы 2019–2020 годов
+track_count AS (
+    SELECT COUNT(t.id) AS track_count
+    FROM Track t
+    JOIN Album a ON t.album_id = a.id
+    WHERE a.year BETWEEN 2019 AND 2020
+),
 
-CREATE TABLE Album (
-    id INT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL
-);
+-- 3. Средняя продолжительность треков по каждому альбому
+average_duration AS (
+    SELECT a.name AS album_name, AVG(t.duration) AS average_duration
+    FROM Album a
+    JOIN Track t ON a.id = t.album_id
+    GROUP BY a.name
+),
 
-CREATE TABLE Track (
-    id INT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    duration INT NOT NULL,
-    album_id INT,
-    FOREIGN KEY (album_id) REFERENCES Album(id)
-);
+-- 4. Все исполнители, которые не выпустили альбомы в 2020 году
+artists_no_albums_2020 AS (
+    SELECT DISTINCT a.name
+    FROM Artist a
+    WHERE NOT EXISTS (
+        SELECT 1
+        FROM Album al
+        WHERE al.artist_id = a.id AND al.year = 2020
+    )
+),
 
-CREATE TABLE Artist_Album (
-    artist_id INT,
-    album_id INT,
-    FOREIGN KEY (artist_id) REFERENCES Artist(id),
-    FOREIGN KEY (album_id) REFERENCES Album(id),
-    PRIMARY KEY (artist_id, album_id)
-);
-
-CREATE TABLE Artist_Genre (
-    artist_id INT,
-    genre_id INT,
-    FOREIGN KEY (artist_id) REFERENCES Artist(id),
-    FOREIGN KEY (genre_id) REFERENCES Genre(id),
-    PRIMARY KEY (artist_id, genre_id)
-);
-
-CREATE TABLE Compilation (
-    id INT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE Track_Compilation (
-    track_id INT,
-    compilation_id INT,
-    FOREIGN KEY (track_id) REFERENCES Track(id),
-    FOREIGN KEY (compilation_id) REFERENCES Compilation(id),
-    PRIMARY KEY (track_id, compilation_id)
-);
+-- 5. Названия сборников, в которых присутствует конкретный исполнитель (например, "Исполнитель A")
+compilations_for_artist AS (
+    SELECT c.name AS compilation_name
+    FROM Compilation c
+    JOIN Track t ON c.id = t.compilation_id
+    JOIN Artist a ON t.artist_id = a.id
+    WHERE a.name = 'Исполнитель A' -- Замените 'Исполнитель A' на имя нужного исполнителя
+)
