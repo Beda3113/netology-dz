@@ -1,59 +1,59 @@
 -- Вставка жанров
-INSERT INTO Genre (name) VALUES 
-('Поп'),
-('Рок'),
-('Хип-хоп');
+INSERT INTO Genre (name) VALUES
+('Rock'),
+('Pop'),
+('Jazz');
 
 -- Вставка исполнителей
-INSERT INTO Artist (name) VALUES 
-('Исполнитель 1'),
-('Исполнитель 2'),
-('Исполнитель 3'),
-('Исполнитель 4');
+INSERT INTO Artist (name) VALUES
+('The Beatles'),
+('Adele'),
+('Miles Davis'),
+('Queen');
 
 -- Вставка альбомов
-INSERT INTO Album (title, release_year) VALUES 
-('Альбом 1', 2020),
-('Альбом 2', 2021),
-('Альбом 3', 2022);
+INSERT INTO Album (name, year) VALUES
+('Abbey Road', 1969),
+('25', 2015),
+('A Night at the Opera', 1975);
 
 -- Вставка треков
-INSERT INTO Track (title, duration, album_id) VALUES 
-('Трек 1', '00:03:30', 1),
-('Трек 2', '00:04:00', 1),
-('Трек 3', '00:02:45', 2),
-('Трек 4', '00:03:15', 2),
-('Трек 5', '00:04:20', 3),
-('Трек 6', '00:03:50', 3);
+INSERT INTO Track (name, duration, album_id) VALUES
+('Come Together', 259, 1),
+('Someone Like You', 285, 2),
+('So What', 548, 3),
+('Bohemian Rhapsody', 354, 3),
+('Let It Be', 243, 1),
+('Rolling in the Deep', 228, 2);
 
 -- Вставка сборников
-INSERT INTO Compilation (title, release_year) VALUES 
-('Сборник 1', 2020),
-('Сборник 2', 2021),
-('Сборник 3', 2022),
-('Сборник 4', 2023);
+INSERT INTO Compilation (name, year) VALUES
+('Greatest Hits Volume 1', 1990),
+('The Best of Adele', 2016),
+('Jazz Classics', 2000),
+('Rock Anthems', 2018);
 
--- Связываем исполнителей с жанрами
-INSERT INTO Artist_Genre (artist_id, genre_id) VALUES 
-(1, 1), -- Исполнитель 1 - Поп
-(1, 2), -- Исполнитель 1 - Рок
-(2, 2), -- Исполнитель 2 - Рок
-(2, 3), -- Исполнитель 2 - Хип-хоп
-(3, 1), -- Исполнитель 3 - Поп
-(4, 3); -- Исполнитель 4 - Хип-хоп
+-- Связь исполнителей и жанров
+INSERT INTO Artist_Genre (artist_id, genre_id) VALUES
+(1, 1), -- The Beatles - Rock
+(2, 2), -- Adele - Pop
+(3, 3), -- Miles Davis - Jazz
+(4, 1), -- Queen - Rock
+(4, 2); -- Queen - Pop
 
--- Связываем исполнителей с альбомами
-INSERT INTO Artist_Album (artist_id, album_id) VALUES 
-(1, 1), -- Исполнитель 1 - Альбом 1
-(1, 2), -- Исполнитель 1 - Альбом 2
-(2, 2), -- Исполнитель 2 - Альбом 2
-(3, 3); -- Исполнитель 3 - Альбом 3
+-- Связь исполнителей и альбомов
+INSERT INTO Artist_Album (artist_id, album_id) VALUES
+(1, 1), -- The Beatles - Abbey Road
+(2, 2), -- Adele - 25
+(3, 3), -- Miles Davis - So What
+(4, 3), -- Queen - A Night at the Opera
+(4, 1); -- Queen - Abbey Road
 
--- Связываем треки со сборниками
-INSERT INTO Track_Compilation (track_id, compilation_id) VALUES 
-(1, 1), -- Трек 1 - Сборник 1
-(2, 1), -- Трек 2 - Сборник 1
-(3, 2), -- Трек 3 - Сборник 2
-(4, 2), -- Трек 4 - Сборник 2
-(5, 3), -- Трек 5 - Сборник 3
-(6, 4); -- Трек 6 - Сборник 4
+-- Связь треков и сборников
+INSERT INTO Track_Compilation (track_id, compilation_id) VALUES
+(1, 1), -- Come Together в Greatest Hits Volume 1
+(2, 2), -- Someone Like You в The Best of Adele
+(3, 3), -- So What в Jazz Classics
+(4, 4), -- Bohemian Rhapsody в Rock Anthems
+(5, 1), -- Let It Be в Greatest Hits Volume 1
+(6, 2); -- Rolling in the Deep в The Best of Adele
