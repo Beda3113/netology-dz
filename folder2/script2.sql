@@ -21,5 +21,6 @@ WHERE name NOT LIKE '% %'; -- Имя не должно содержать про
 
 -- Запрос 5: Название треков, которые содержат слово «мой» или «my»
 SELECT name
-FROM Track
-WHERE name ILIKE '%мой%' OR name ILIKE '%my%'; -- ILIKE для нечувствительного к регистру поиска
+FROM Tracks
+WHERE lower(string_to_array(title, ' ')) && ARRAY['мой', 'my'];
+
