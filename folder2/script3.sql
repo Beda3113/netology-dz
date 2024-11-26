@@ -33,11 +33,11 @@ artists_no_albums_2020 AS (
     )
 ),
 
--- 5. Названия сборников, в которых присутствует конкретный исполнитель (например, "Исполнитель A")
+-- 5. Названия сборников, в которых присутствует конкретный исполнитель 
 compilations_for_artist AS (
     SELECT c.name AS compilation_name
     FROM Compilation c
     JOIN Track t ON c.id = t.compilation_id
     JOIN Artist a ON t.artist_id = a.id
-    WHERE a.name = 'Исполнитель A' -- Замените 'Исполнитель A' на имя нужного исполнителя
+    WHERE a.name = 'The Beatles' 
 )
