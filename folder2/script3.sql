@@ -23,15 +23,16 @@ average_duration AS (
 ),
 
 -- 4. Все исполнители, которые не выпустили альбомы в 2020 году
-artists_no_albums_2020 AS (
+WITH artists_no_albums_2020 AS (
     SELECT DISTINCT a.name
     FROM Artist a
     WHERE NOT EXISTS (
         SELECT 1
-        FROM Album al
-        WHERE al.artist_id = a.id AND al.year = 2020
+        FROM ArtistAlbum aa
+        JOIN Album al ON aa.album_id = al.id
+        WHERE aa.artist_id = a.id AND al.year = 2020
     )
-),
+)
 
 -- 5. Названия сборников, в которых присутствует конкретный исполнитель 
 compilations_for_artist AS (
